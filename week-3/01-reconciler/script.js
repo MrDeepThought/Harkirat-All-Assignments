@@ -2,6 +2,7 @@
 // What are u looking for?
 // You'll get it on Friday you lazy porson
 
+//TODO : Try to reduce DOM interactions because that is the major time consuming process here so will have to plan for that!
 function createDomElements(data) {
   var parentElement = document.getElementById("mainArea");
 
