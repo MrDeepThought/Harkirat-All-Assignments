@@ -21,8 +21,9 @@ function loginUser(userType){
 
 function isAuthenticated(req,res,next){
   // Is this header set by the JWT api or we have to follow these standards from the client side?
+  console.log(req.headers.authorization);
   const authToken = req.headers.authorization.split(' ')[1]; //{ 'Authorization': 'Bearer jwt_token_here' }
-   if (!token){
+   if (!authToken){
     res.status(404).json({"message":"Token needs to be provided!"});
    }
    let userData = jwt.verify(authToken,SECRET);
@@ -49,7 +50,7 @@ app.post('/admin/signup', (req, res) => {
       'username': username,
       'password': password,
     };
-    const token = jwt.sign({'username': username,'password': password,"type": "ADMIN"},SECRET,{"expires":"1h"});
+    const token = jwt.sign({'username': username,'password': password,"type": "ADMIN"},SECRET,{"expiresIn":"1h"});
     ADMINS.push(adminObj);
     res.status(201).json({"mesage" : "Admin created successfully", "token":token});
   }
@@ -58,7 +59,7 @@ app.post('/admin/signup', (req, res) => {
 
 app.post('/admin/login', loginUser("ADMINS"), (req, res) => {
   // logic to log in admin
-  const token = jwt.sign(req.user,SECRET,{"expires":"1h"});
+  const token = jwt.sign(req.user,SECRET,{"expiresIn":"1h"});
   res.status(200).json({"message" : "Logged in successfully!", "token":token});
   
 });
@@ -110,8 +111,8 @@ app.post('/users/signup', (req, res) => {
       'password': password,
       'purchasedCourses': []
     };
-    const token = jwt.sign({"username":username,"password":password,"userType":"USER"},SECRET,{"expires":"1h"});
-    USERS.PUSH(userObj);
+    const token = jwt.sign({"username":username,"password":password,"userType":"USER"},SECRET,{"expiresIn":"1h"});
+    USERS.push(userObj);
     res.status(201).json({"mesage" : "User created successfully", "token": token});
   }
   else res.status(400).send(`400 Bad Request! The username: ${username} already exists`);
@@ -119,16 +120,16 @@ app.post('/users/signup', (req, res) => {
 
 app.post('/users/login', loginUser("USERS"), (req, res) => {
   // logic to log in user
-  const token = jwt.sign(req.user,SECRET,{"expires":"1h"});
+  const token = jwt.sign(req.user,SECRET,{"expiresIn":"1h"});
   res.status(200).json({"message" : "Logged in successfully!", "token":token});
 });
 
-app.get('/users/courses', (req, res) => {
+app.get('/users/courses', isAuthenticated, (req, res) => {
   // logic to list all courses
   res.status(200).json({"courses":COURSES});
 });
 
-app.post('/users/courses/:courseId', (req, res) => {
+app.post('/users/courses/:courseId', isAuthenticated, (req, res) => {
   // logic to purchase a course
   let user = req.user;
   let courseId = +req.params.courseId;
@@ -140,7 +141,7 @@ app.post('/users/courses/:courseId', (req, res) => {
   else res.status(404).json({"message":`Couldn't find course with course ID : ${courseId}`});
 });
 
-app.get('/users/purchasedCourses', (req, res) => {
+app.get('/users/purchasedCourses', isAuthenticated, (req, res) => {
   // logic to view purchased courses
   let user = req.user;
   res.status(200).json({"purchasedCourses":user.purchasedCourses});

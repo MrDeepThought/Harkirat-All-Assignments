@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 
-const FILESDIR = path.resolve('./files');
+const FILESDIR = path.resolve('02-course-app-easy','files');
 let ADMINS = [];
 let USERS = [];
 let COURSES = [];
