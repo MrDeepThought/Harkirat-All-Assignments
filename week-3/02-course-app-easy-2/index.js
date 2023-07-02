@@ -21,7 +21,6 @@ function loginUser(userType){
 
 function isAuthenticated(req,res,next){
   // Is this header set by the JWT api or we have to follow these standards from the client side?
-  console.log(req.headers.authorization);
   const authToken = req.headers.authorization.split(' ')[1]; //{ 'Authorization': 'Bearer jwt_token_here' }
    if (!authToken){
     res.status(404).json({"message":"Token needs to be provided!"});
@@ -50,7 +49,7 @@ app.post('/admin/signup', (req, res) => {
       'username': username,
       'password': password,
     };
-    const token = jwt.sign({'username': username,'password': password,"type": "ADMIN"},SECRET,{"expiresIn":"1h"});
+    const token = jwt.sign({'username': username,"userType": "ADMIN"},SECRET,{"expiresIn":"1h"});
     ADMINS.push(adminObj);
     res.status(201).json({"mesage" : "Admin created successfully", "token":token});
   }
@@ -59,7 +58,7 @@ app.post('/admin/signup', (req, res) => {
 
 app.post('/admin/login', loginUser("ADMINS"), (req, res) => {
   // logic to log in admin
-  const token = jwt.sign(req.user,SECRET,{"expiresIn":"1h"});
+  const token = jwt.sign({"username":req.user.username,"userType":"ADMIN"},SECRET,{"expiresIn":"1h"});
   res.status(200).json({"message" : "Logged in successfully!", "token":token});
   
 });
@@ -111,7 +110,7 @@ app.post('/users/signup', (req, res) => {
       'password': password,
       'purchasedCourses': []
     };
-    const token = jwt.sign({"username":username,"password":password,"userType":"USER"},SECRET,{"expiresIn":"1h"});
+    const token = jwt.sign({"username":username, "userType":"USER"},SECRET,{"expiresIn":"1h"});
     USERS.push(userObj);
     res.status(201).json({"mesage" : "User created successfully", "token": token});
   }
@@ -120,7 +119,7 @@ app.post('/users/signup', (req, res) => {
 
 app.post('/users/login', loginUser("USERS"), (req, res) => {
   // logic to log in user
-  const token = jwt.sign(req.user,SECRET,{"expiresIn":"1h"});
+  const token = jwt.sign({"username":req.user.username,"userType":"USER"},SECRET,{"expiresIn":"1h"});
   res.status(200).json({"message" : "Logged in successfully!", "token":token});
 });
 
