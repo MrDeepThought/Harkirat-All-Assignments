@@ -1,0 +1,76 @@
+#root{
+    height: 98vh;
+    width: 98vw;
+}
+
+#main-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+}
+
+.child-container-1{
+    height: 17%;
+    width: 600px; /* Adjust the width as needed */
+    padding: 20px;
+    background-color: #63bcab;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.child-container-2{
+    height: 83%;
+    width: 600px; /* Adjust the width as needed */
+    padding: 20px;
+    background-color: #597fa7;
+    border-radius: 10px;
+    flex-grow: 1;
+}
+
+.todo{
+    color: black;
+    background-color: lightgrey;
+    font-weight: bold;
+    padding: 10px;
+    margin: 5px;
+    border: 2px;
+    border-radius: 10px;
+}
+
+#description-input{
+    width: 350px;
+    margin-right: 10px;
+}
+
+.delete-box{
+    margin-top: 10px;
+}
+
+.title-box{
+    font-size: 23px;
+}
+
+.desc-box{
+    font-size: 15px;
+    font-weight: bolder;
+}
+
+.delete-btn{
+    color: white;
+    background-color: #e0301c;
+    font-size: 15px;
+}
+
+#add-btn{
+    color: black;
+    background-color: #1bde4c;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+h2{
+    color: white;
+}

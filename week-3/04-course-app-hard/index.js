@@ -173,7 +173,7 @@ app.listen(3000, () => {
   console.log('Server is listening on port 3000');
 });
 // connect to mongo DB server
-mongoose.connect(mongodbString,{ useNewUrlParser: true, useUnifiedTopology: true, dbName: "courses" })
+mongoose.connect("mongodb+srv://mrdeepthought:2TJUF51NkapSA5v0@cluster0.rparoue.mongodb.net/",{ useNewUrlParser: true, useUnifiedTopology: true, dbName: "courses" })
   .then(() => {
     console.log("Connection with database done!");
   });
