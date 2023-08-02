@@ -1,9 +1,11 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const cors = require('cors');
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 let ADMINS = [];
 let USERS = [];
@@ -19,17 +21,18 @@ try {
     USERS = [];
     COURSES = [];
 }
-console.log(ADMINS);
+// console.log(ADMINS);
 
 const SECRET = 'my-secret-key';
 
 const authenticateJwt = (req, res, next) => {
   const authHeader = req.headers.authorization;
+  // console.log(authHeader);
   if (authHeader) {
     const token = authHeader.split(' ')[1];
     jwt.verify(token, SECRET, (err, user) => {
       if (err) {
-        return res.sendStatus(403);
+        return res.status(403).send("There is an error!");
       }
       req.user = user;
       next();
@@ -38,6 +41,29 @@ const authenticateJwt = (req, res, next) => {
     res.sendStatus(401);
   }
 };
+
+// authentication route to check if the user is authenticated and then send the details accordingly
+app.get('/authenticate', authenticateJwt, (req,res) => {
+  // console.log(req.user);
+  res.json({user: req.user});
+});
+
+app.get('/courses/:id', authenticateJwt, (req,res) => {
+  const courseId = +req.params.id;
+  const course = COURSES.find(c => { return c.id === courseId});
+  if (req.user.role === "user"){
+    const user = USERS.find( u => {return u.username === req.user.username});
+    let purchased = null;
+    // console.log(user.purchasedCourses);
+    if (user.purchasedCourses !== undefined) {
+      purchased = user.purchasedCourses.find( c => { return c.id === courseId});
+    }
+    // console.log(purchased);
+    purchased = purchased === undefined || purchased === null ? false : true;
+    res.status(200).json({ course, user:req.user, purchased });
+  }
+  else res.status(200).json({ course, user:req.user });
+})
 
 // Admin routes
 app.post('/admin/signup', (req, res) => {
@@ -131,7 +157,7 @@ app.post('/users/courses/:courseId', authenticateJwt, (req, res) => {
       fs.writeFileSync('users.json', JSON.stringify(USERS));
       res.json({ message: 'Course purchased successfully' });
     } else {
-      res.status(403).json({ message: 'User not found' });
+      res.status(404).json({ message: 'User not found' });
     }
   } else {
     res.status(404).json({ message: 'Course not found' });
@@ -143,8 +169,12 @@ app.get('/users/purchasedCourses', authenticateJwt, (req, res) => {
   if (user) {
     res.json({ purchasedCourses: user.purchasedCourses || [] });
   } else {
-    res.status(403).json({ message: 'User not found' });
+    res.status(404).json({ message: 'User not found' });
   }
+});
+
+app.get('*', function(req, res){
+  res.status(404).json({"message":"Link not found!"});
 });
 
 app.listen(3000, () => console.log('Server running on port 3000'));

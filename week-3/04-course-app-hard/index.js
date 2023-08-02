@@ -2,10 +2,12 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const SECRET = require('crypto').randomBytes(64).toString('hex');
+const cors = require('cors');
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 // *********************** Define Mongoose Schemas & Models ****************************** //
 
