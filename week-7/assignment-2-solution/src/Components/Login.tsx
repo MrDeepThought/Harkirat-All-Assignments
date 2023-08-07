@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import {Link} from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+// import { Location } from 'history';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -15,7 +16,7 @@ const Login = () => {
         const data = await response.json();
         if (data.token) {
             localStorage.setItem("token", data.token)
-            window.location = "/todos";
+            window.location.assign("/todos");
         } else {
             alert("invalid credentials");
         }
