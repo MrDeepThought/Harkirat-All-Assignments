@@ -13,7 +13,7 @@ You WILL need mongoDB running locally, or a cloud mongoDB instance. Please repla
  - Try running it, notice the errors that you see.
    - The errors you will see should be of the format 
    - 'mongoose' was also declared here.
-   - Move all requires => imports to fix these errors. This is related to a bug bug in TS (https://stackoverflow.com/questions/35758584/cannot-redeclare-block-scoped-variable)
+   - Move all requires => imports to fix these errors. This is related to a bug in TS (https://stackoverflow.com/questions/35758584/cannot-redeclare-block-scoped-variable)
    - For example, convert
      - `const mongoose = require('mongoose');` to
      - `import mongoose from 'mongoose';`
@@ -26,9 +26,9 @@ You WILL need mongoDB running locally, or a cloud mongoDB instance. Please repla
  - Next, run `npm install -D @types/express` to install the types for express.
  - Next, run `npm install -D @types/mongoose` to install the types for mongoose.
  - You will see a bunch of `Parameter 'req' implicitly has an 'any' type.` errors. Fix these by adding types to all the functions.
-   - Express exports the Request and Response types, use them to type the req and res params.
-   - If you ever get stuck, initially you can use the any type
-   - You can also just flip noImplicitAny to false in tsconfig, but that's cheating.
+  - Express exports the Request and Response types, use them to type the req and res params.
+  - If you ever get stuck, initially you can use the any type
+  - You can also just flip noImplicitAny to false in tsconfig, but that's cheating.
  - You will see req.userId complains everywhere, and rightfully so. We've added userId key to an object that doesn't expect it. Fix this by sending over the id via the headers.
  - Create types for the inputs to all routes (for eg User, Todo) and use them when u decode the body.
  - Try running tsc now, you should see no errors. 
